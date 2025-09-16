@@ -272,12 +272,17 @@ export function DataGeneration({ file, model, parameters, onNext, setGeneratedDa
             progress: i === 2 ? 0 : s.progress,
         })))
 
-        const count = Math.max(1000, sampleCount)
+        const count = Math.min(100000, sampleCount)
         try {
             const res = await fetch(`http://localhost:8003/model/generate/${jobIdRef.current}?count=${count}`)
             if (!res.ok) throw new Error("Failed to start generation")
             const data = await res.json()
-            setGeneratedData(data) // Pass generated data to parent component
+            setGeneratedData({
+                job_id: data.job_id,
+                synthetic_data: data.synthetic_data,
+
+
+            }) // Pass generated data to parent component
             console.log("Generated data:", data);
             pushLog(`generation POST ok; count=${count}`)
         } catch (e) {
